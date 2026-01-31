@@ -46,7 +46,6 @@
         linear-gradient(180deg, var(--bg1), var(--bg2));
     }
 
-    /* Animated background layer */
     .shimmer{
       position:fixed; inset:-30%;
       z-index:0;
@@ -113,7 +112,6 @@
       }
     }
 
-    /* Glass utility */
     .glass{
       background: linear-gradient(180deg, var(--glassTop), var(--glassBot));
       border: 1px solid var(--stroke);
@@ -123,81 +121,73 @@
       -webkit-backdrop-filter: blur(16px);
     }
 
-    /* ================= TIMER (ONE LINE, CENTERED) ================= */
+    /* ================= TIMER (TOP, CENTERED, NO OVERFLOW) ================= */
     #topTimer{
       position: fixed;
       top: calc(14px + var(--safe-top));
       left: 50%;
-      transform: translate(-50%, -10px);
-      width: min(980px, 94vw);
+      transform: translate(-50%, -12px);
+      width: min(920px, 94vw);
       z-index: 999999;
       opacity: 0;
       pointer-events: none;
       transition: opacity .55s ease, transform .55s ease;
+      overflow: hidden; /* IMPORTANT: prevents any visual overflow */
     }
     body.unlocked #topTimer{
       opacity: 1;
       transform: translate(-50%, 0);
     }
 
-    .topBar{
-      padding: 12px 14px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
+    .timerHead{
+      padding: 12px 14px 8px;
+      text-align:center;
     }
-
-    .topLeft{
-      text-align:left;
-      min-width: 240px;
-    }
-    .topTitle{
-      margin:0;
+    .timerTitle{
+      margin: 0;
       font-weight: 950;
-      font-size: clamp(15px, 1.9vw, 20px);
-      letter-spacing: .2px;
+      font-size: clamp(15px, 2.0vw, 20px);
       line-height:1.15;
+      letter-spacing:.2px;
       text-shadow: 0 18px 60px rgba(0,0,0,.35);
     }
     .accent{
       color: rgba(255,79,216,.98);
       text-shadow: 0 20px 70px rgba(255,79,216,.22);
     }
-    .topSub{
-      margin: 4px 0 0;
+    .timerSub{
+      margin: 6px 0 0;
       color: var(--muted);
-      font-size: 12.5px;
-    }
-
-    .topRight{
-      text-align:right;
-      color: rgba(255,255,255,.74);
       font-size: 12.5px;
       white-space: nowrap;
     }
 
-    .inlineTimer{
-      padding: 0 14px 14px;
+    /* One-line timer row */
+    .timerRow{
+      padding: 10px 14px 12px;
       display:flex;
-      justify-content:center;
       align-items:center;
-      gap: 10px;
-      flex-wrap: nowrap; /* keep in one line */
+      justify-content:center;
+      gap: clamp(6px, 1.0vw, 12px);
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      overflow: hidden; /* HARD STOP overflow */
     }
 
-    .seg{
-      display:flex;
-      align-items:baseline;
-      gap: 8px;
+    .pill{
+      position: relative;
+      display:inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 10px;
       padding: 10px 12px;
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,.16);
-      background: linear-gradient(180deg, rgba(0,0,0,.26), rgba(255,255,255,.06));
-      position:relative;
-      overflow:hidden;
+      background: linear-gradient(180deg, rgba(0,0,0,.28), rgba(255,255,255,.06));
+      min-width: clamp(74px, 15vw, 132px); /* responsive width without overflow */
+      overflow: hidden;
     }
-    .seg::before{
+    .pill::before{
       content:"";
       position:absolute; inset:-45%;
       background:
@@ -209,82 +199,64 @@
       pointer-events:none;
     }
 
-    /* FLIP card number */
-    .numWrap{
-      position: relative;
-      width: 3.2ch;
-      height: 1.3em;
-      perspective: 700px;
-      display:inline-block;
-    }
-    .num{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    .digit{
+      position:relative;
       font-variant-numeric: tabular-nums;
       font-weight: 950;
-      font-size: clamp(22px, 3.2vw, 36px);
+      font-size: clamp(22px, 3.3vw, 40px);
+      line-height: 1;
       letter-spacing: .02em;
       color: rgba(255,255,255,.97);
       text-shadow: 0 14px 55px rgba(0,0,0,.45);
-      transform-style: preserve-3d;
-      backface-visibility: hidden;
-    }
-    .num.next{
-      transform: rotateX(-90deg);
-      opacity: 0;
-    }
-    .flip .num.current{
-      animation: flipOut .45s ease forwards;
-    }
-    .flip .num.next{
-      animation: flipIn .45s ease forwards;
-    }
-    @keyframes flipOut{
-      0%{ transform: rotateX(0deg); opacity:1; }
-      100%{ transform: rotateX(90deg); opacity:0; }
-    }
-    @keyframes flipIn{
-      0%{ transform: rotateX(-90deg); opacity:0; }
-      100%{ transform: rotateX(0deg); opacity:1; }
     }
 
-    .lab{
+    .digit.bump{
+      animation: bump .55s ease;
+    }
+    @keyframes bump{
+      0%{ transform: translateY(0) scale(1); filter: drop-shadow(0 0 0 rgba(255,79,216,0)); }
+      35%{ transform: translateY(-1px) scale(1.06); filter: drop-shadow(0 10px 22px rgba(255,79,216,.22)); }
+      100%{ transform: translateY(0) scale(1); filter: drop-shadow(0 0 0 rgba(255,79,216,0)); }
+    }
+
+    .uLabel{
       position:relative;
       font-weight: 850;
       font-size: 11px;
-      letter-spacing: .14em;
+      letter-spacing: .16em;
       text-transform: uppercase;
       color: rgba(255,255,255,.78);
     }
 
-    .colon{
+    .sep{
       font-weight: 900;
-      font-size: 22px;
+      font-size: clamp(18px, 2.6vw, 28px);
       color: rgba(255,255,255,.55);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
       text-shadow: 0 12px 40px rgba(0,0,0,.35);
-      animation: blinkColon 1s steps(1,end) infinite;
+      animation: blink 1s steps(1,end) infinite;
     }
-    @keyframes blinkColon{
+    @keyframes blink{
       0%,49%{ opacity:.85; }
       50%,100%{ opacity:.35; }
     }
 
-    #metaLine{
+    .timerMeta{
       padding: 0 14px 14px;
       text-align:center;
-      color: rgba(255,255,255,.72);
+      color: rgba(255,255,255,.74);
       font-size: 13px;
     }
 
-    /* On very small screens, allow wrap (still centered) */
+    /* On smaller screens: shrink pills + hide labels to keep ONE LINE */
+    @media (max-width: 520px){
+      .pill{ min-width: 0; padding: 10px 10px; gap: 8px; }
+      .uLabel{ display:none; } /* keeps one line on phones */
+      .timerSub{ font-size: 12px; }
+    }
     @media (max-width: 360px){
-      .inlineTimer{ flex-wrap: wrap; row-gap: 10px; }
-      .colon{ display:none; }
-      .topLeft{ min-width: unset; }
+      .sep{ display:none; } /* ultra-small screens */
+      .timerRow{ gap: 8px; }
     }
 
     /* ============= LOCK OVERLAY ============= */
@@ -404,12 +376,6 @@
       color: rgba(255,255,255,.55);
       font-size: 12px;
     }
-
-    @media (max-width: 520px){
-      .key{ height: 64px; }
-      .topBar{ flex-direction: column; align-items:flex-start; }
-      .topRight{ width:100%; text-align:left; }
-    }
   </style>
 </head>
 
@@ -419,55 +385,22 @@
 
   <!-- TOP TIMER -->
   <header id="topTimer" class="glass" aria-label="Countdown timer">
-    <div class="topBar">
-      <div class="topLeft">
-        <p class="topTitle">Time left until you meet <span class="accent">Bitti</span> ✨</p>
-      </div>
-      <div class="topRight" id="rightNote">Locked 🔒</div>
+    <div class="timerHead">
+      <p class="timerTitle">Time left until you meet <span class="accent">Bitti</span> ✨</p>
+      <p class="timerSub">Feb 11, 2026 · 10:02 AM (Pacific)</p>
     </div>
 
-    <!-- ONE LINE TIMER -->
-    <div class="inlineTimer" aria-live="polite">
-      <div class="seg" id="segD">
-        <div class="numWrap">
-          <div class="num current" id="dCur">00</div>
-          <div class="num next" id="dNext">00</div>
-        </div>
-        <div class="lab">Days</div>
-      </div>
-
-      <div class="colon">:</div>
-
-      <div class="seg" id="segH">
-        <div class="numWrap">
-          <div class="num current" id="hCur">00</div>
-          <div class="num next" id="hNext">00</div>
-        </div>
-        <div class="lab">Hours</div>
-      </div>
-
-      <div class="colon">:</div>
-
-      <div class="seg" id="segM">
-        <div class="numWrap">
-          <div class="num current" id="mCur">00</div>
-          <div class="num next" id="mNext">00</div>
-        </div>
-        <div class="lab">Minutes</div>
-      </div>
-
-      <div class="colon">:</div>
-
-      <div class="seg" id="segS">
-        <div class="numWrap">
-          <div class="num current" id="sCur">00</div>
-          <div class="num next" id="sNext">00</div>
-        </div>
-        <div class="lab">Seconds</div>
-      </div>
+    <div class="timerRow" role="timer" aria-live="polite">
+      <div class="pill"><span id="d" class="digit">00</span><span class="uLabel">Days</span></div>
+      <span class="sep">:</span>
+      <div class="pill"><span id="h" class="digit">00</span><span class="uLabel">Hours</span></div>
+      <span class="sep">:</span>
+      <div class="pill"><span id="m" class="digit">00</span><span class="uLabel">Min</span></div>
+      <span class="sep">:</span>
+      <div class="pill"><span id="s" class="digit">00</span><span class="uLabel">Sec</span></div>
     </div>
 
-    <div id="metaLine"></div>
+    <div id="metaLine" class="timerMeta"></div>
   </header>
 
   <!-- LOCK OVERLAY -->
@@ -504,12 +437,12 @@
         <button class="mini" id="hintBtn">Hint</button>
       </div>
 
-      <div class="footerHint">Tip: fav person in our life 😉</div>
+      <div class="footerHint">Tip: works best on phone too 😉</div>
     </div>
   </div>
 
   <script>
-    const PASSCODE = "140725";
+    const PASSCODE = "130725";
     const TARGET_MS = new Date("2026-02-11T10:02:00-08:00").getTime();
 
     /* Hearts */
@@ -558,7 +491,6 @@
     const dotsWrap = document.getElementById("dots");
     const dots = Array.from(dotsWrap.querySelectorAll(".dot"));
     const lockMsg = document.getElementById("lockMsg");
-    const rightNote = document.getElementById("rightNote");
 
     let entered = "";
     let locked = true;
@@ -589,8 +521,6 @@
     function unlock(){
       locked = false;
       document.body.classList.add("unlocked");
-      rightNote.textContent = "Unlocked ❤️";
-
       makeHearts(52);
 
       lockOverlay.classList.add("fadeOut");
@@ -642,7 +572,7 @@
       hintClicks++;
       vibrate(20);
       if(hintClicks === 1) setMessage("Hint: it’s a special date 😉");
-      else if(hintClicks === 2) setMessage("Another hint: starts with 14…");
+      else if(hintClicks === 2) setMessage("Another hint: starts with 13…");
       else setMessage("No more hints 😄");
     });
 
@@ -653,40 +583,24 @@
       if(e.key === "Escape") document.getElementById("clearBtn").click();
     });
 
-    /* =========================
-       Countdown (flip animation)
-    ========================== */
+    /* Countdown */
+    const elD = document.getElementById("d");
+    const elH = document.getElementById("h");
+    const elM = document.getElementById("m");
+    const elS = document.getElementById("s");
     const metaLine = document.getElementById("metaLine");
 
-    const segMap = {
-      d: { seg: document.getElementById("segD"), cur: document.getElementById("dCur"), next: document.getElementById("dNext") },
-      h: { seg: document.getElementById("segH"), cur: document.getElementById("hCur"), next: document.getElementById("hNext") },
-      m: { seg: document.getElementById("segM"), cur: document.getElementById("mCur"), next: document.getElementById("mNext") },
-      s: { seg: document.getElementById("segS"), cur: document.getElementById("sCur"), next: document.getElementById("sNext") },
-    };
-
+    let timerHandle = null;
     function pad2(n){ return String(n).padStart(2,"0"); }
 
-    function flipTo(key, valueStr){
-      const { seg, cur, next } = segMap[key];
-      if (cur.textContent === valueStr) return;
-
-      // prepare next
-      next.textContent = valueStr;
-
-      // trigger flip
-      seg.classList.remove("flip");
-      void seg.offsetWidth;
-      seg.classList.add("flip");
-
-      // after animation, commit
-      setTimeout(() => {
-        cur.textContent = valueStr;
-        seg.classList.remove("flip");
-      }, 470);
+    function setVal(el, v){
+      if (el.textContent !== v){
+        el.textContent = v;
+        el.classList.remove("bump");
+        void el.offsetWidth;
+        el.classList.add("bump");
+      }
     }
-
-    let timerHandle = null;
 
     function renderCountdown(){
       const diff = Math.max(0, TARGET_MS - Date.now());
@@ -697,10 +611,10 @@
       const mins  = Math.floor((totalSec % 3600) / 60);
       const secs  = totalSec % 60;
 
-      flipTo("d", String(days).padStart(2,"0"));
-      flipTo("h", pad2(hours));
-      flipTo("m", pad2(mins));
-      flipTo("s", pad2(secs));
+      setVal(elD, String(days).padStart(2,"0"));
+      setVal(elH, pad2(hours));
+      setVal(elM, pad2(mins));
+      setVal(elS, pad2(secs));
 
       metaLine.textContent = diff === 0 ? "She’s here ❤️" : "Every second gets you closer ✨";
     }
