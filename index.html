@@ -644,35 +644,68 @@
       }
     }
 
+/* =========================
+   Countdown logic (REPLACE ENTIRE OLD SECTION WITH THIS)
+========================== */
+const TARGET_EPOCH_MS = Date.UTC(2026, 1, 11, 18, 2, 0); 
+// Feb 11, 2026 10:02 AM Pacific (PST -08:00) => 18:02 UTC
+
+const elD = document.getElementById("d");
+const elH = document.getElementById("h");
+const elM = document.getElementById("m");
+const elS = document.getElementById("s");
+const metaLine = document.getElementById("metaLine");
+
+let timerHandle = null;
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+
+function setVal(el, v){
+  if (!el) return;
+  if (el.textContent !== v){
+    el.textContent = v;
+    el.classList.remove("pulse");
+    void el.offsetWidth;
+    el.classList.add("pulse");
+  }
+}
+
+function renderCountdown(){
+  if (!elD || !elH || !elM || !elS || !metaLine) return;
+
+  const diff = Math.max(0, TARGET_EPOCH_MS - Date.now());
+  const totalSec = Math.ceil(diff / 1000);
+
+  const days  = Math.floor(totalSec / 86400);
+  const hours = Math.floor((totalSec % 86400) / 3600);
+  const mins  = Math.floor((totalSec % 3600) / 60);
+  const secs  = totalSec % 60;
+
+  setVal(elD, String(days).padStart(2,"0"));
+  setVal(elH, pad2(hours));
+  setVal(elM, pad2(mins));
+  setVal(elS, pad2(secs));
+
+  metaLine.textContent = diff === 0 ? "She’s here ❤️" : "Every second gets you closer ✨";
+}
+
 function startCountdown(){
+  // Debug helper (you can remove later)
+  if (!elD || !elH || !elM || !elS) {
+    console.error("Countdown elements not found. Check IDs: d,h,m,s,metaLine");
+    return;
+  }
+
   if (timerHandle) return;
 
-  const tick = () => {
-    const diff = Math.max(0, TARGET_MS - Date.now());
+  // First render immediately
+  renderCountdown();
 
-    // Use ceil so it truly counts DOWN (doesn't get "stuck" / doesn't show 00 early)
-    const totalSec = Math.ceil(diff / 1000);
-
-    const days  = Math.floor(totalSec / 86400);
-    const hours = Math.floor((totalSec % 86400) / 3600);
-    const mins  = Math.floor((totalSec % 3600) / 60);
-    const secs  = totalSec % 60;
-
-    setVal(elD, String(days).padStart(2,"0"));
-    setVal(elH, pad2(hours));
-    setVal(elM, pad2(mins));
-    setVal(elS, pad2(secs));
-
-    metaLine.textContent = diff === 0 ? "She’s here ❤️" : "Every second gets you closer ✨";
-  };
-
-  tick();
-
-  // Align to the next full second, then update every 1s (smooth + correct)
+  // Align updates to exact second boundary
   const msToNextSecond = 1000 - (Date.now() % 1000);
   setTimeout(() => {
-    tick();
-    timerHandle = setInterval(tick, 1000);
+    renderCountdown();
+    timerHandle = setInterval(renderCountdown, 1000);
   }, msToNextSecond);
 }
  </script>
