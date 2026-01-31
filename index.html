@@ -5,86 +5,100 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Until You Meet Bitti ❤️</title>
   <meta name="theme-color" content="#0b0b14" />
+
   <style>
     :root{
-      --bg1:#0b0b14;
-      --bg2:#160a1d;
-      --stroke: rgba(255,255,255,.16);
+      --bg1:#090913;
+      --bg2:#15081b;
+
       --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.62);
+      --muted: rgba(255,255,255,.65);
+
+      --stroke: rgba(255,255,255,.14);
+      --glassTop: rgba(255,255,255,.16);
+      --glassBot: rgba(255,255,255,.10);
+
       --pink:#ff4fd8;
       --rose:#ff2f6d;
       --lav:#b58bff;
-      --glow: 0 20px 60px rgba(255,79,216,.14);
+
       --radius: 22px;
-      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --shadow: 0 18px 60px rgba(0,0,0,.48);
+      --glow: 0 22px 70px rgba(255,79,216,.16);
+
       --safe-top: env(safe-area-inset-top);
       --safe-bot: env(safe-area-inset-bottom);
+
       --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
       font-family: var(--font);
       color: var(--text);
       overflow:hidden;
       background:
-        radial-gradient(1200px 900px at 20% 10%, rgba(181,139,255,.26), transparent 60%),
-        radial-gradient(1000px 700px at 80% 25%, rgba(255,79,216,.22), transparent 55%),
-        radial-gradient(900px 800px at 50% 90%, rgba(255,47,109,.18), transparent 60%),
+        radial-gradient(1100px 850px at 18% 12%, rgba(181,139,255,.28), transparent 60%),
+        radial-gradient(900px 650px at 85% 25%, rgba(255,79,216,.22), transparent 55%),
+        radial-gradient(850px 800px at 50% 92%, rgba(255,47,109,.18), transparent 60%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
     }
 
-    /* animated shimmer */
+    /* Shimmer BEHIND hearts + UI */
     .shimmer{
       position:fixed; inset:-30%;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.07), transparent 55%),
-        radial-gradient(circle at 70% 60%, rgba(255,255,255,.06), transparent 55%),
-        conic-gradient(from 90deg at 50% 50%, rgba(255,79,216,.10), rgba(181,139,255,.08), rgba(255,47,109,.09), rgba(255,79,216,.10));
-      filter: blur(22px);
-      opacity:.65;
-      animation: shimmer 14s ease-in-out infinite alternate;
-      pointer-events:none;
       z-index:0;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.08), transparent 56%),
+        radial-gradient(circle at 70% 60%, rgba(255,255,255,.06), transparent 56%),
+        conic-gradient(from 90deg at 50% 50%,
+          rgba(255,79,216,.12),
+          rgba(181,139,255,.10),
+          rgba(255,47,109,.10),
+          rgba(255,79,216,.12)
+        );
+      filter: blur(24px);
+      opacity:.62;
+      animation: shimmer 14s ease-in-out infinite alternate;
     }
     @keyframes shimmer{
-      0%{transform: translate(-2%, -2%) rotate(0deg) scale(1.02)}
-      100%{transform: translate(2%, 2%) rotate(14deg) scale(1.06)}
+      0%{ transform: translate(-2%, -2%) rotate(0deg) scale(1.02); }
+      100%{ transform: translate(2%, 2%) rotate(14deg) scale(1.06); }
     }
 
-    /* Hearts */
+    /* Floating hearts: ALWAYS behind screens */
     #hearts{
       position:fixed; inset:0;
+      z-index:1;
       pointer-events:none;
       overflow:hidden;
-      z-index:1;
       opacity:.55;
       transition: opacity .7s ease;
     }
-    body.unlocked #hearts{ opacity: 0.95; }
+    body.unlocked #hearts{ opacity:.95; }
 
     .heart{
       position:absolute;
       width:16px; height:16px;
       transform: rotate(45deg);
       opacity:0;
-      filter: drop-shadow(0 12px 18px rgba(255,79,216,.18));
+      filter: drop-shadow(0 14px 22px rgba(255,79,216,.14));
       animation: floatUp linear infinite;
       will-change: transform, opacity;
+      mix-blend-mode: screen;
     }
-    .heart::before,
-    .heart::after{
+    .heart::before,.heart::after{
       content:"";
       position:absolute;
       width:100%; height:100%;
       border-radius:50%;
-      background: var(--hcolor, rgba(255,79,216,.9));
+      background: var(--hcolor, rgba(255,79,216,.92));
     }
     .heart{
-      background: var(--hcolor, rgba(255,79,216,.9));
+      background: var(--hcolor, rgba(255,79,216,.92));
       border-radius: 3px;
     }
     .heart::before{ left:-50%; top:0; }
@@ -92,15 +106,15 @@
 
     @keyframes floatUp{
       0%{
-        transform: translate3d(var(--x,0px), 110vh, 0) rotate(45deg) scale(var(--s,1));
+        transform: translate3d(0, 110vh, 0) rotate(45deg) scale(var(--s,1));
         opacity:0;
       }
-      10%{opacity: var(--o,.75)}
-      90%{opacity: var(--o,.75)}
+      10%{ opacity: var(--o,.75); }
+      90%{ opacity: var(--o,.75); }
       100%{
-        transform: translate3d(calc(var(--x,0px) + var(--drift, 40px)), -20vh, 0)
-                   rotate(calc(45deg + var(--spin, 120deg)))
-                   scale(calc(var(--s,1) * 1.08));
+        transform: translate3d(var(--drift, 40px), -20vh, 0)
+                   rotate(calc(45deg + var(--spin, 140deg)))
+                   scale(calc(var(--s,1) * 1.1));
         opacity:0;
       }
     }
@@ -108,12 +122,12 @@
     /* Screens */
     .screen{
       position:relative;
-      z-index:2;
+      z-index:2; /* UI above hearts */
       height:100%;
+      width:100%;
       display:flex;
-      align-items:center;
       justify-content:center;
-      padding: calc(28px + var(--safe-top)) 18px calc(22px + var(--safe-bot));
+      padding: calc(26px + var(--safe-top)) 18px calc(22px + var(--safe-bot));
       opacity:0;
       transform: translateY(10px);
       pointer-events:none;
@@ -125,37 +139,56 @@
       pointer-events:auto;
     }
 
-    /* Glass card */
+    /* Lock is centered; countdown is top-aligned */
+    #lockscreen{ align-items:center; }
+    #countdownscreen{ align-items:flex-start; }
+
+    /* Glass */
     .glass{
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      background: linear-gradient(180deg, var(--glassTop), var(--glassBot));
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
       box-shadow: var(--shadow), var(--glow);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
     }
 
-    /* Lock screen */
+    /* Lock screen card */
     .lock-wrap{ width:min(420px, 92vw); text-align:center; }
-    .title{ font-size:22px; font-weight:800; margin:0 0 10px; }
-    .subtitle{ margin:0 0 18px; color:var(--muted); font-size:14px; line-height:1.35; }
-
     .passcode-card{ padding: 18px 16px 16px; }
+
+    .title{
+      font-size: 22px;
+      font-weight: 850;
+      margin:0 0 10px;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
 
     .dots{ display:flex; justify-content:center; gap:10px; margin: 12px 0 8px; }
     .dot{
       width:11px; height:11px; border-radius:999px;
-      border: 1px solid rgba(255,255,255,.28);
-      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.26);
+      background: rgba(255,255,255,.05);
       transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
     }
     .dot.filled{
-      background: rgba(255,255,255,.90);
+      background: rgba(255,255,255,.92);
       transform: scale(1.06);
-      box-shadow: 0 0 0 6px rgba(255,79,216,.09);
+      box-shadow: 0 0 0 7px rgba(255,79,216,.10);
     }
 
-    .lock-msg{ min-height:20px; margin: 8px 0 12px; font-size:13px; color: rgba(255,255,255,.78); }
+    .lock-msg{
+      min-height: 20px;
+      margin: 8px 0 12px;
+      font-size: 13px;
+      color: rgba(255,255,255,.78);
+    }
     .lock-msg.err{ color: rgba(255,140,170,.95); }
 
     .keypad{
@@ -165,13 +198,14 @@
       padding: 12px;
       margin-top: 2px;
     }
+
     .key{
-      height: 64px;
-      border-radius: 18px;
+      height: 66px;
+      border-radius: 20px;
       border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.07);
+      background: rgba(255,255,255,.08);
       color: var(--text);
-      font-weight: 800;
+      font-weight: 850;
       font-size: 22px;
       cursor:pointer;
       display:flex;
@@ -187,27 +221,29 @@
     .key span{
       display:block;
       font-size: 10px;
-      font-weight: 650;
+      font-weight: 700;
       letter-spacing: .22em;
       opacity:.65;
       margin-top: 2px;
     }
-    .key:active{
-      transform: scale(.98);
-      background: rgba(255,255,255,.10);
-      border-color: rgba(255,255,255,.22);
-    }
     .key::after{
       content:"";
-      position:absolute; inset:-40%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,79,216,.16), transparent 50%),
-                  radial-gradient(circle at 70% 70%, rgba(181,139,255,.14), transparent 50%);
+      position:absolute; inset:-60%;
+      background:
+        radial-gradient(circle at 25% 35%, rgba(255,79,216,.16), transparent 55%),
+        radial-gradient(circle at 75% 70%, rgba(181,139,255,.14), transparent 58%);
       transform: rotate(18deg);
-      opacity:0;
+      opacity:.0;
       transition: opacity .2s ease;
       pointer-events:none;
     }
-    .key:active::after{opacity:1}
+    .key:hover::after{ opacity:.35; }
+    .key:active{
+      transform: scale(.985);
+      background: rgba(255,255,255,.11);
+      border-color: rgba(255,255,255,.24);
+    }
+    .key:active::after{ opacity:.65; }
 
     .keypad-bottom{
       display:flex;
@@ -221,13 +257,13 @@
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,.16);
       background: rgba(0,0,0,.18);
-      color: rgba(255,255,255,.82);
+      color: rgba(255,255,255,.85);
       cursor:pointer;
-      font-weight: 700;
+      font-weight: 760;
       transition: transform .12s ease, background .12s ease;
       -webkit-tap-highlight-color: transparent;
     }
-    .mini:active{ transform: scale(.99); background: rgba(0,0,0,.26); }
+    .mini:active{ transform: scale(.99); background: rgba(0,0,0,.28); }
 
     .shake{ animation: shake .42s ease; }
     @keyframes shake{
@@ -239,54 +275,75 @@
     }
 
     /* Countdown screen */
-    .count-wrap{ width:min(780px, 94vw); text-align:center; }
-    .hero{ margin-bottom:16px; }
+    .count-wrap{
+      width:min(840px, 94vw);
+      margin-top: 10px;
+      text-align:center;
+    }
+
+    .hero{
+      margin: 6px auto 14px;
+      max-width: 760px;
+    }
     .hero h1{
       margin:0;
-      font-size: clamp(24px, 3.4vw, 38px);
+      font-size: clamp(26px, 3.8vw, 42px);
       line-height: 1.12;
       letter-spacing: .2px;
+      text-shadow: 0 18px 60px rgba(0,0,0,.35);
     }
-    .hero p{ margin: 10px 0 0; color: var(--muted); font-size:14px; line-height:1.35; }
+    .hero p{
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .timer-card{
+      padding: 10px;
+    }
 
     .timer{
       display:grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
-      padding: 16px;
+      padding: 14px;
     }
+
     .unit{
       padding: 14px 10px;
       border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.06));
-      border: 1px solid rgba(255,255,255,.15);
+      background: linear-gradient(180deg, rgba(0,0,0,.22), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.16);
       position:relative;
       overflow:hidden;
     }
     .unit::before{
       content:"";
-      position:absolute; inset:-30%;
+      position:absolute; inset:-35%;
       background:
-        radial-gradient(circle at 30% 30%, rgba(255,79,216,.16), transparent 55%),
-        radial-gradient(circle at 70% 60%, rgba(181,139,255,.14), transparent 55%);
-      filter: blur(10px);
+        radial-gradient(circle at 30% 30%, rgba(255,79,216,.16), transparent 58%),
+        radial-gradient(circle at 70% 60%, rgba(181,139,255,.14), transparent 58%);
+      filter: blur(12px);
       opacity:.55;
       transform: rotate(10deg);
       pointer-events:none;
     }
+
     .val{
       position:relative;
-      font-weight: 900;
+      font-weight: 950;
       font-variant-numeric: tabular-nums;
-      font-size: clamp(30px, 5vw, 56px);
+      font-size: clamp(34px, 5.2vw, 62px);
       letter-spacing: .02em;
-      text-shadow: 0 12px 45px rgba(0,0,0,.40);
+      color: rgba(255,255,255,.96);
+      text-shadow: 0 14px 55px rgba(0,0,0,.45);
     }
     .lab{
       position:relative;
       margin-top: 6px;
-      color: rgba(255,255,255,.75);
-      font-weight: 750;
+      color: rgba(255,255,255,.76);
+      font-weight: 800;
       font-size: 12px;
       letter-spacing: .12em;
       text-transform: uppercase;
@@ -299,7 +356,11 @@
       100%{transform: scale(1)}
     }
 
-    .meta{ margin-top: 14px; color: rgba(255,255,255,.65); font-size: 13px; }
+    .meta{
+      margin-top: 12px;
+      color: rgba(255,255,255,.70);
+      font-size: 13px;
+    }
 
     .badge{
       display:inline-flex;
@@ -308,14 +369,14 @@
       padding: 10px 14px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      box-shadow: 0 18px 50px rgba(0,0,0,.28);
-      margin-top: 18px;
+      background: rgba(255,255,255,.08);
+      box-shadow: 0 18px 50px rgba(0,0,0,.26);
+      margin-top: 16px;
     }
     .spark{
       width:10px;height:10px;border-radius:999px;
       background: linear-gradient(90deg, rgba(255,79,216,.95), rgba(181,139,255,.95));
-      box-shadow: 0 0 0 8px rgba(255,79,216,.10);
+      box-shadow: 0 0 0 9px rgba(255,79,216,.10);
       animation: blink 1.2s ease-in-out infinite;
     }
     @keyframes blink{
@@ -325,7 +386,8 @@
 
     @media (max-width: 520px){
       .timer{ grid-template-columns: repeat(2, 1fr); }
-      .key{ height: 62px; }
+      .key{ height: 64px; }
+      .count-wrap{ margin-top: 4px; }
     }
   </style>
 </head>
@@ -359,7 +421,7 @@
           <button class="key" data-digit="8">8<span>TUV</span></button>
           <button class="key" data-digit="9">9<span>WXYZ</span></button>
 
-          <button class="key" style="opacity:.55; pointer-events:none;">&nbsp;<span>&nbsp;</span></button>
+          <button class="key" style="opacity:.45; pointer-events:none;">&nbsp;<span>&nbsp;</span></button>
           <button class="key" data-digit="0">0<span>⠀</span></button>
           <button class="key" id="backBtn" aria-label="Backspace">⌫<span>DEL</span></button>
         </div>
@@ -376,11 +438,14 @@
   <section id="countdownscreen" class="screen" aria-label="Countdown Screen">
     <div class="count-wrap">
       <div class="hero">
-        <h1>Time left until you meet <span style="color:rgba(255,79,216,.95); text-shadow:0 20px 60px rgba(255,79,216,.18)">Bitti</span> ✨</h1>
+        <h1>
+          Time left until you meet
+          <span style="color:rgba(255,79,216,.98); text-shadow:0 20px 65px rgba(255,79,216,.20)">Bitti</span> ✨
+        </h1>
         <p>Counting down to <strong>Feb 11, 2026 · 10:02 AM (Pacific)</strong>.</p>
       </div>
 
-      <div class="glass">
+      <div class="glass timer-card">
         <div class="timer" role="timer" aria-live="polite">
           <div class="unit"><div id="d" class="val">00</div><div class="lab">Days</div></div>
           <div class="unit"><div id="h" class="val">00</div><div class="lab">Hours</div></div>
@@ -390,46 +455,39 @@
       </div>
 
       <div class="meta" id="metaLine"></div>
-      <div class="badge"><span class="spark"></span> saved for you <span style="opacity:.9">❤️</span></div>
+      <div class="badge"><span class="spark"></span> saved for you <span style="opacity:.92">❤️</span></div>
     </div>
   </section>
 
   <script>
-    /* =========================
-       CONFIG
-    ========================== */
     const PASSCODE = "130725";
 
     // Feb 11, 2026 10:02 AM Pacific (PST = UTC-8) -> 18:02 UTC
-    // (February is PST, not PDT, so UTC-8 is correct.)
     const TARGET_EPOCH_MS = Date.UTC(2026, 1, 11, 18, 2, 0);
 
-    /* =========================
-       HEARTS
-    ========================== */
+    /* Hearts */
     const hearts = document.getElementById("hearts");
     const rand = (min, max) => Math.random() * (max - min) + min;
 
     function makeHearts(count){
       hearts.innerHTML = "";
       const colors = [
-        "rgba(255,79,216,.85)",
-        "rgba(255,47,109,.78)",
-        "rgba(181,139,255,.78)",
-        "rgba(255,255,255,.55)"
+        "rgba(255,79,216,.92)",
+        "rgba(255,47,109,.86)",
+        "rgba(181,139,255,.86)",
+        "rgba(255,255,255,.60)"
       ];
-
       for(let i=0;i<count;i++){
         const el = document.createElement("div");
         el.className = "heart";
 
         const size = rand(10, 26);
         const left = rand(-5, 105);
-        const dur = rand(7.5, 14.5);
+        const dur = rand(7.6, 14.8);
         const delay = rand(0, 6);
-        const opacity = rand(0.25, 0.85);
+        const opacity = rand(0.25, 0.9);
         const drift = rand(-70, 70);
-        const spin = rand(-160, 160);
+        const spin = rand(-170, 170);
         const color = colors[Math.floor(Math.random()*colors.length)];
 
         el.style.width = size + "px";
@@ -446,16 +504,11 @@
         hearts.appendChild(el);
       }
     }
-
-    // light hearts before unlock, more after unlock
     makeHearts(28);
 
-    /* =========================
-       PASSCODE LOGIC
-    ========================== */
+    /* Passcode */
     const lockscreen = document.getElementById("lockscreen");
     const countdownscreen = document.getElementById("countdownscreen");
-
     const dotsWrap = document.getElementById("dots");
     const dots = Array.from(dotsWrap.querySelectorAll(".dot"));
     const lockMsg = document.getElementById("lockMsg");
@@ -466,21 +519,17 @@
     function vibrate(ms){
       try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
     }
-
     function setMessage(text, isErr=false){
       lockMsg.textContent = text || "";
       lockMsg.classList.toggle("err", !!isErr);
     }
-
     function updateDots(){
       dots.forEach((d,i)=> d.classList.toggle("filled", i < entered.length));
     }
-
     function resetEntry(){
       entered = "";
       updateDots();
     }
-
     function wrongPass(){
       vibrate(90);
       dotsWrap.classList.remove("shake");
@@ -489,7 +538,6 @@
       setMessage("Wrong passcode. Try again.", true);
       setTimeout(resetEntry, 520);
     }
-
     function unlock(){
       locked = false;
       setMessage("");
@@ -499,10 +547,8 @@
       countdownscreen.classList.add("active");
 
       makeHearts(52);
-
-      startCountdown(); // <-- the countdown starts HERE
+      startCountdown();
     }
-
     function onDigit(d){
       if(!locked) return;
       if(entered.length >= 6) return;
@@ -524,7 +570,6 @@
     document.querySelectorAll(".key[data-digit]").forEach(btn=>{
       btn.addEventListener("click", ()=> onDigit(btn.dataset.digit));
     });
-
     document.getElementById("backBtn").addEventListener("click", ()=>{
       if(!locked) return;
       if(entered.length){
@@ -533,7 +578,6 @@
         vibrate(25);
       }
     });
-
     document.getElementById("clearBtn").addEventListener("click", ()=>{
       if(!locked) return;
       resetEntry();
@@ -551,7 +595,6 @@
       else setMessage("No more hints 😄");
     });
 
-    // keyboard support
     window.addEventListener("keydown", (e)=>{
       if(!locked) return;
       if(e.key >= "0" && e.key <= "9") onDigit(e.key);
@@ -559,19 +602,15 @@
       if(e.key === "Escape") document.getElementById("clearBtn").click();
     });
 
-    /* =========================
-       COUNTDOWN (WORKING)
-    ========================== */
+    /* Countdown (working) */
     const elD = document.getElementById("d");
     const elH = document.getElementById("h");
     const elM = document.getElementById("m");
     const elS = document.getElementById("s");
     const metaLine = document.getElementById("metaLine");
-
     let timerHandle = null;
 
     function pad2(n){ return String(n).padStart(2,"0"); }
-
     function setVal(el, v){
       if (!el) return;
       if (el.textContent !== v){
@@ -581,7 +620,6 @@
         el.classList.add("pulse");
       }
     }
-
     function renderCountdown(){
       const diff = Math.max(0, TARGET_EPOCH_MS - Date.now());
       const totalSec = Math.ceil(diff / 1000);
@@ -598,15 +636,9 @@
 
       metaLine.textContent = diff === 0 ? "She’s here ❤️" : "Every second gets you closer ✨";
     }
-
     function startCountdown(){
-      // prevent multiple intervals
       if (timerHandle) return;
-
-      // immediate render so you see it instantly after unlock
       renderCountdown();
-
-      // align to next full second, then update every second
       const msToNextSecond = 1000 - (Date.now() % 1000);
       setTimeout(() => {
         renderCountdown();
