@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Until You Meet Bitti ❤️</title>
+  <meta name="theme-color" content="#0b0b14" />
+  <style>
+    /* =========================
+       Base + Theme
+    ========================== */
+    :root{
+      --bg1:#0b0b14;
+      --bg2:#160a1d;
+      --card: rgba(255,255,255,.10);
+      --card2: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.16);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.62);
+      --pink:#ff4fd8;
+      --rose:#ff2f6d;
+      --lav:#b58bff;
+      --glow: 0 20px 60px rgba(255,79,216,.14);
+      --radius: 22px;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --safe-top: env(safe-area-inset-top);
+      --safe-bot: env(safe-area-inset-bottom);
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: var(--font);
+      color: var(--text);
+      overflow:hidden;
+      background: radial-gradient(1200px 900px at 20% 10%, rgba(181,139,255,.26), transparent 60%),
+                  radial-gradient(1000px 700px at 80% 25%, rgba(255,79,216,.22), transparent 55%),
+                  radial-gradient(900px 800px at 50% 90%, rgba(255,47,109,.18), transparent 60%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+
+    /* Subtle animated shimmer layer */
+    .shimmer{
+      position:fixed; inset:-30%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.07), transparent 55%),
+        radial-gradient(circle at 70% 60%, rgba(255,255,255,.06), transparent 55%),
+        conic-gradient(from 90deg at 50% 50%, rgba(255,79,216,.10), rgba(181,139,255,.08), rgba(255,47,109,.09), rgba(255,79,216,.10));
+      filter: blur(22px);
+      opacity:.65;
+      animation: shimmer 14s ease-in-out infinite alternate;
+      pointer-events:none;
+    }
+    @keyframes shimmer{
+      0%{transform: translate(-2%, -2%) rotate(0deg) scale(1.02)}
+      100%{transform: translate(2%, 2%) rotate(14deg) scale(1.06)}
+    }
+
+    /* =========================
+       Floating Hearts Background
+    ========================== */
+    #hearts{
+      position:fixed; inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:0;
+    }
+    .heart{
+      position:absolute;
+      width:16px; height:16px;
+      transform: rotate(45deg);
+      opacity:.0;
+      filter: drop-shadow(0 12px 18px rgba(255,79,216,.18));
+      animation: floatUp linear infinite;
+      will-change: transform, opacity;
+    }
+    .heart::before,
+    .heart::after{
+      content:"";
+      position:absolute;
+      width:100%; height:100%;
+      border-radius:50%;
+      background: var(--hcolor, rgba(255,79,216,.9));
+    }
+    .heart{
+      background: var(--hcolor, rgba(255,79,216,.9));
+      border-radius: 3px;
+    }
+    .heart::before{ left:-50%; top:0; }
+    .heart::after{ left:0; top:-50%; }
+
+    @keyframes floatUp{
+      0%{
+        transform: translate3d(var(--x,0px), 110vh, 0) rotate(45deg) scale(var(--s,1));
+        opacity:0;
+      }
+      10%{opacity: var(--o,.75)}
+      90%{opacity: var(--o,.75)}
+      100%{
+        transform: translate3d(calc(var(--x,0px) + var(--drift, 40px)), -20vh, 0) rotate(calc(45deg + var(--spin, 120deg))) scale(calc(var(--s,1) * 1.08));
+        opacity:0;
+      }
+    }
+
+    /* =========================
+       Screens + Transitions
+    ========================== */
+    .screen{
+      position:relative;
+      z-index:1;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: calc(28px + var(--safe-top)) 18px calc(22px + var(--safe-bot));
+      opacity:0;
+      transform: translateY(10px);
+      pointer-events:none;
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .screen.active{
+      opacity:1;
+      transform: translateY(0);
+      pointer-events:auto;
+    }
+
+    /* =========================
+       Lock Screen (Passcode)
+    ========================== */
+    .lock-wrap{
+      width:min(420px, 92vw);
+      text-align:center;
+    }
+    .title{
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing:.2px;
+      margin: 0 0 10px;
+    }
+    .subtitle{
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow), var(--glow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .passcode-card{
+      padding: 18px 16px 16px;
+    }
+
+    .dots{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      margin: 14px 0 10px;
+    }
+    .dot{
+      width:11px; height:11px;
+      border-radius:999px;
+      border: 1px solid rgba(255,255,255,.28);
+      background: rgba(255,255,255,.06);
+      box-shadow: inset 0 0 0 0 rgba(255,79,216,.0);
+      transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+    .dot.filled{
+      background: rgba(255,255,255,.85);
+      transform: scale(1.06);
+      box-shadow: 0 0 0 6px rgba(255,79,216,.09);
+    }
+
+    .lock-msg{
+      min-height: 20px;
+      margin: 6px 0 14px;
+      font-size: 13px;
+      color: rgba(255,255,255,.78);
+    }
+    .lock-msg.err{
+      color: rgba(255,140,170,.95);
+    }
+
+    .keypad{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 12px;
+      margin-top: 6px;
+    }
+    .key{
+      height: 64px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.07);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 22px;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      position:relative;
+      overflow:hidden;
+    }
+    .key span{
+      display:block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .22em;
+      opacity:.65;
+      margin-top: 2px;
+    }
+    .key:active{
+      transform: scale(.98);
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.22);
+    }
+    .key::after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,79,216,.16), transparent 50%),
+                  radial-gradient(circle at 70% 70%, rgba(181,139,255,.14), transparent 50%);
+      transform: rotate(18deg);
+      opacity:0;
+      transition: opacity .2s ease;
+      pointer-events:none;
+    }
+    .key:active::after{opacity:1}
+
+    .keypad-bottom{
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 0 12px 12px;
+    }
+    .mini{
+      flex:1;
+      height: 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.82);
+      cursor:pointer;
+      font-weight: 650;
+      transition: transform .12s ease, background .12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mini:active{ transform: scale(.99); background: rgba(0,0,0,.26); }
+
+    .shake{
+      animation: shake .42s ease;
+    }
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      20%{transform:translateX(-10px)}
+      40%{transform:translateX(10px)}
+      60%{transform:translateX(-8px)}
+      80%{transform:translateX(8px)}
+    }
+
+    /* =========================
+       Countdown Screen
+    ========================== */
+    .count-wrap{
+      width:min(780px, 94vw);
+      text-align:center;
+    }
+    .hero{
+      margin-bottom: 16px;
+    }
+    .hero h1{
+      margin:0;
+      font-size: clamp(24px, 3.4vw, 38px);
+      line-height: 1.12;
+      letter-spacing: .2px;
+    }
+    .hero p{
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height:1.35;
+    }
+
+    .timer{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 16px;
+    }
+    .unit{
+      padding: 14px 10px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.15);
+      position:relative;
+      overflow:hidden;
+    }
+    .unit::before{
+      content:"";
+      position:absolute; inset:-30%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,79,216,.16), transparent 55%),
+        radial-gradient(circle at 70% 60%, rgba(181,139,255,.14), transparent 55%);
+      filter: blur(10px);
+      opacity:.55;
+      transform: rotate(10deg);
+      pointer-events:none;
+    }
+    .val{
+      position:relative;
+      font-weight: 850;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(30px, 5vw, 56px);
+      letter-spacing: .02em;
+      text-shadow: 0 12px 45px rgba(0,0,0,.40);
+    }
+    .lab{
+      position:relative;
+      margin-top: 6px;
+      color: rgba(255,255,255,.75);
+      font-weight: 650;
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .pulse{
+      animation: pulse .7s ease;
+    }
+    @keyframes pulse{
+      0%{transform: scale(1)}
+      40%{transform: scale(1.03)}
+      100%{transform: scale(1)}
+    }
+
+    .meta{
+      margin-top: 14px;
+      color: rgba(255,255,255,.65);
+      font-size: 13px;
+    }
+
+    .big-heart{
+      margin-top: 18px;
+      font-size: 18px;
+      color: rgba(255,255,255,.85);
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      align-items:center;
+    }
+    .badge{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    }
+    .spark{
+      width:10px;height:10px;border-radius:999px;
+      background: linear-gradient(90deg, rgba(255,79,216,.95), rgba(181,139,255,.95));
+      box-shadow: 0 0 0 8px rgba(255,79,216,.10);
+      animation: blink 1.2s ease-in-out infinite;
+    }
+    @keyframes blink{
+      0%,100%{opacity:.65; transform: scale(.92)}
+      50%{opacity:1; transform: scale(1.05)}
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 520px){
+      .timer{ grid-template-columns: repeat(2, 1fr); }
+      .key{ height: 62px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shimmer"></div>
+  <div id="hearts" aria-hidden="true"></div>
+
+  <!-- LOCK SCREEN -->
+  <section id="lockscreen" class="screen active" role="dialog" aria-label="Passcode Lock">
+    <div class="lock-wrap">
+      <div class="glass passcode-card">
+        <h2 class="title">Unlock ❤️</h2>
+        <p class="subtitle">Enter the 6-digit passcode to see the countdown.</p>
+
+        <div id="dots" class="dots" aria-label="Passcode dots">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+
+        <div id="lockMsg" class="lock-msg" aria-live="polite"></div>
+
+        <div class="keypad" aria-label="Numeric keypad">
+          <button class="key" data-digit="1">1<span>⠀</span></button>
+          <button class="key" data-digit="2">2<span>ABC</span></button>
+          <button class="key" data-digit="3">3<span>DEF</span></button>
+          <button class="key" data-digit="4">4<span>GHI</span></button>
+          <button class="key" data-digit="5">5<span>JKL</span></button>
+          <button class="key" data-digit="6">6<span>MNO</span></button>
+          <button class="key" data-digit="7">7<span>PQRS</span></button>
+          <button class="key" data-digit="8">8<span>TUV</span></button>
+          <button class="key" data-digit="9">9<span>WXYZ</span></button>
+
+          <button class="key" id="empty" style="opacity:.55; pointer-events:none;">&nbsp;<span>&nbsp;</span></button>
+          <button class="key" data-digit="0">0<span>⠀</span></button>
+          <button class="key" id="backBtn" aria-label="Backspace">⌫<span>DEL</span></button>
+        </div>
+
+        <div class="keypad-bottom">
+          <button class="mini" id="clearBtn">Clear</button>
+          <button class="mini" id="hintBtn">Hint</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section id="countdownscreen" class="screen" aria-label="Countdown Screen">
+    <div class="count-wrap">
+      <div class="hero">
+        <h1>Time left until you meet <span style="color:rgba(255,79,216,.95); text-shadow:0 20px 60px rgba(255,79,216,.18)">Bitti</span> ✨</h1>
+        <p>Counting down to <strong>Feb 11, 2026 · 10:02 AM (Pacific)</strong>.</p>
+      </div>
+
+      <div class="glass">
+        <div class="timer" role="timer" aria-live="polite">
+          <div class="unit"><div id="d" class="val">00</div><div class="lab">Days</div></div>
+          <div class="unit"><div id="h" class="val">00</div><div class="lab">Hours</div></div>
+          <div class="unit"><div id="m" class="val">00</div><div class="lab">Minutes</div></div>
+          <div class="unit"><div id="s" class="val">00</div><div class="lab">Seconds</div></div>
+        </div>
+      </div>
+
+      <div class="meta" id="metaLine"></div>
+
+      <div class="big-heart">
+        <span class="badge"><span class="spark"></span> saved for you <span style="opacity:.9">❤️</span></span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /* =========================
+       Config
+    ========================== */
+    const PASSCODE = "130725";
+
+    // Feb 11, 2026 10:02 AM Pacific (PST = UTC-8) => 18:02 UTC
+    // This makes the countdown timezone-safe across devices.
+    const TARGET_UTC_MS = Date.UTC(2026, 1, 11, 18, 2, 0); // month is 0-indexed (1 = Feb)
+
+    /* =========================
+       Hearts generator
+    ========================== */
+    const hearts = document.getElementById("hearts");
+
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+
+    function makeHearts(count = 36){
+      hearts.innerHTML = "";
+      const colors = [
+        "rgba(255,79,216,.85)",
+        "rgba(255,47,109,.78)",
+        "rgba(181,139,255,.78)",
+        "rgba(255,255,255,.55)"
+      ];
+      for(let i=0;i<count;i++){
+        const el = document.createElement("div");
+        el.className = "heart";
+        const size = rand(10, 26);
+        const left = rand(-5, 105); // vw
+        const dur = rand(7.5, 14.5);
+        const delay = rand(0, 6);
+        const opacity = rand(0.25, 0.85);
+        const drift = rand(-70, 70);
+        const spin = rand(-160, 160);
+        const color = colors[Math.floor(Math.random()*colors.length)];
+
+        el.style.width = size + "px";
+        el.style.height = size + "px";
+        el.style.left = left + "vw";
+        el.style.setProperty("--s", (size/18).toFixed(2));
+        el.style.setProperty("--o", opacity.toFixed(2));
+        el.style.setProperty("--drift", drift.toFixed(0) + "px");
+        el.style.setProperty("--spin", spin.toFixed(0) + "deg");
+        el.style.setProperty("--hcolor", color);
+        el.style.animationDuration = dur.toFixed(2) + "s";
+        el.style.animationDelay = delay.toFixed(2) + "s";
+
+        hearts.appendChild(el);
+      }
+    }
+    makeHearts(40);
+
+    /* =========================
+       Passcode logic
+    ========================== */
+    const lockscreen = document.getElementById("lockscreen");
+    const countdownscreen = document.getElementById("countdownscreen");
+    const dotsWrap = document.getElementById("dots");
+    const dots = Array.from(dotsWrap.querySelectorAll(".dot"));
+    const lockMsg = document.getElementById("lockMsg");
+
+    let entered = "";
+    let locked = true;
+    let hintClicks = 0;
+
+    function vibrate(ms){
+      try{
+        if(navigator.vibrate) navigator.vibrate(ms);
+      }catch(e){}
+    }
+
+    function setMessage(text, isErr=false){
+      lockMsg.textContent = text || "";
+      lockMsg.classList.toggle("err", !!isErr);
+    }
+
+    function updateDots(){
+      dots.forEach((d,i)=> d.classList.toggle("filled", i < entered.length));
+    }
+
+    function resetEntry(){
+      entered = "";
+      updateDots();
+    }
+
+    function wrongPass(){
+      vibrate(90);
+      dotsWrap.classList.remove("shake");
+      void dotsWrap.offsetWidth; // restart animation
+      dotsWrap.classList.add("shake");
+      setMessage("Wrong passcode. Try again.", true);
+      setTimeout(()=>{ resetEntry(); }, 520);
+    }
+
+    function unlock(){
+      locked = false;
+      vibrate([25, 40, 25]);
+      setMessage("");
+
+      // Smooth transition between screens
+      lockscreen.classList.remove("active");
+      countdownscreen.classList.add("active");
+
+      // Slightly more hearts once unlocked
+      makeHearts(52);
+
+      // Start countdown
+      startCountdown();
+    }
+
+    function onDigit(d){
+      if(!locked) return;
+      if(entered.length >= 6) return;
+      entered += d;
+      updateDots();
+      setMessage("");
+
+      if(entered.length === 6){
+        if(entered === PASSCODE){
+          setMessage("Unlocked ❤️");
+          setTimeout(unlock, 320);
+        } else {
+          wrongPass();
+        }
+      }
+    }
+
+    document.querySelectorAll(".key[data-digit]").forEach(btn=>{
+      btn.addEventListener("click", ()=> onDigit(btn.dataset.digit));
+    });
+
+    document.getElementById("backBtn").addEventListener("click", ()=>{
+      if(!locked) return;
+      if(entered.length){
+        entered = entered.slice(0,-1);
+        updateDots();
+        vibrate(25);
+      }
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", ()=>{
+      if(!locked) return;
+      resetEntry();
+      setMessage("");
+      vibrate(35);
+    });
+
+    document.getElementById("hintBtn").addEventListener("click", ()=>{
+      if(!locked) return;
+      hintClicks++;
+      vibrate(20);
+      if(hintClicks === 1) setMessage("Hint: it’s a special date 😉");
+      else if(hintClicks === 2) setMessage("Another hint: starts with 13…");
+      else setMessage("No more hints 😄", false);
+    });
+
+    // Optional: allow keyboard input too
+    window.addEventListener("keydown", (e)=>{
+      if(!locked) return;
+      if(e.key >= "0" && e.key <= "9") onDigit(e.key);
+      if(e.key === "Backspace") document.getElementById("backBtn").click();
+      if(e.key === "Escape") document.getElementById("clearBtn").click();
+    });
+
+    /* =========================
+       Countdown logic
+    ========================== */
+    const elD = document.getElementById("d");
+    const elH = document.getElementById("h");
+    const elM = document.getElementById("m");
+    const elS = document.getElementById("s");
+    const metaLine = document.getElementById("metaLine");
+
+    let timerHandle = null;
+    let lastSecondShown = null;
+
+    function pad2(n){ return String(n).padStart(2,"0"); }
+
+    function setVal(el, v){
+      if(el.textContent !== v){
+        el.textContent = v;
+        el.classList.remove("pulse");
+        void el.offsetWidth;
+        el.classList.add("pulse");
+      }
+    }
+
+    function startCountdown(){
+      if(timerHandle) return;
+
+      function tick(){
+        const now = Date.now();
+        let diff = TARGET_UTC_MS - now;
+
+        if(diff <= 0){
+          setVal(elD, "00");
+          setVal(elH, "00");
+          setVal(elM, "00");
+          setVal(elS, "00");
+          metaLine.textContent = "She’s here ❤️";
+          return;
+        }
+
+        const totalSec = Math.floor(diff / 1000);
+        const days = Math.floor(totalSec / 86400);
+        const hours = Math.floor((totalSec % 86400) / 3600);
+        const mins = Math.floor((totalSec % 3600) / 60);
+        const secs = totalSec % 60;
+
+        setVal(elD, String(days).padStart(2,"0"));
+        setVal(elH, pad2(hours));
+        setVal(elM, pad2(mins));
+
+        // pulse seconds each tick only when second changes
+        if(lastSecondShown !== secs){
+          lastSecondShown = secs;
+          setVal(elS, pad2(secs));
+        } else {
+          elS.textContent = pad2(secs);
+        }
+
+        // Cute meta line
+        metaLine.textContent = `Every second gets you closer ✨`;
+      }
+
+      tick();
+      timerHandle = setInterval(tick, 180);
+    }
+  </script>
+</body>
+</html>
