@@ -122,22 +122,27 @@
     }
 
     /* ================= TIMER (TOP, CENTERED, NO OVERFLOW) ================= */
+/* ================= TIMER (CENTER OF SCREEN) ================= */
     #topTimer{
-      position: fixed;
-      top: calc(14px + var(--safe-top));
-      left: 50%;
-      transform: translate(-50%, -12px);
-      width: min(920px, 94vw);
-      z-index: 999999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .55s ease, transform .55s ease;
-      overflow: hidden; /* IMPORTANT: prevents any visual overflow */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.98);
+        width: min(920px, 94vw);
+        z-index: 999999;
+
+        opacity: 0;              /* hidden until unlock */
+        pointer-events: none;
+
+        transition: opacity .55s ease, transform .55s ease;
+        overflow: hidden;
     }
+
     body.unlocked #topTimer{
-      opacity: 1;
-      transform: translate(-50%, 0);
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
     }
+
 
     .timerHead{
       padding: 12px 14px 8px;
@@ -387,7 +392,6 @@
   <header id="topTimer" class="glass" aria-label="Countdown timer">
     <div class="timerHead">
       <p class="timerTitle">Time left until you meet <span class="accent">Bitti</span> ✨</p>
-      <p class="timerSub">Feb 11, 2026 · 10:02 AM (Pacific)</p>
     </div>
 
     <div class="timerRow" role="timer" aria-live="polite">
@@ -437,12 +441,12 @@
         <button class="mini" id="hintBtn">Hint</button>
       </div>
 
-      <div class="footerHint">Tip: works best on phone too 😉</div>
+      <div class="footerHint">Tip: think about our fav person 😉</div>
     </div>
   </div>
 
   <script>
-    const PASSCODE = "130725";
+    const PASSCODE = "140725";
     const TARGET_MS = new Date("2026-02-11T10:02:00-08:00").getTime();
 
     /* Hearts */
@@ -571,8 +575,8 @@
       if(!locked) return;
       hintClicks++;
       vibrate(20);
-      if(hintClicks === 1) setMessage("Hint: it’s a special date 😉");
-      else if(hintClicks === 2) setMessage("Another hint: starts with 13…");
+      if(hintClicks === 1) setMessage("Hint: it’s a special person date 😉");
+      else if(hintClicks === 2) setMessage("Another hint: starts with 14…");
       else setMessage("No more hints 😄");
     });
 
