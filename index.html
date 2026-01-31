@@ -8,14 +8,14 @@
 
   <style>
     :root{
-      --bg1:#090913;
-      --bg2:#15081b;
+      --bg1:#070713;
+      --bg2:#16081d;
 
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.65);
+      --text: rgba(255,255,255,.94);
+      --muted: rgba(255,255,255,.66);
 
       --stroke: rgba(255,255,255,.14);
-      --glassTop: rgba(255,255,255,.16);
+      --glassTop: rgba(255,255,255,.20);
       --glassBot: rgba(255,255,255,.10);
 
       --pink:#ff4fd8;
@@ -23,8 +23,8 @@
       --lav:#b58bff;
 
       --radius: 22px;
-      --shadow: 0 18px 60px rgba(0,0,0,.48);
-      --glow: 0 22px 70px rgba(255,79,216,.16);
+      --shadow: 0 20px 70px rgba(0,0,0,.55);
+      --glow: 0 30px 90px rgba(255,79,216,.18);
 
       --safe-top: env(safe-area-inset-top);
       --safe-bot: env(safe-area-inset-bottom);
@@ -40,13 +40,13 @@
       color: var(--text);
       overflow:hidden;
       background:
-        radial-gradient(1100px 850px at 18% 12%, rgba(181,139,255,.28), transparent 60%),
-        radial-gradient(900px 650px at 85% 25%, rgba(255,79,216,.22), transparent 55%),
-        radial-gradient(850px 800px at 50% 92%, rgba(255,47,109,.18), transparent 60%),
+        radial-gradient(1200px 900px at 20% 10%, rgba(181,139,255,.28), transparent 60%),
+        radial-gradient(980px 720px at 82% 22%, rgba(255,79,216,.22), transparent 56%),
+        radial-gradient(900px 820px at 50% 92%, rgba(255,47,109,.18), transparent 60%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
     }
 
-    /* Shimmer BEHIND hearts + UI */
+    /* Subtle animated background layer */
     .shimmer{
       position:fixed; inset:-30%;
       z-index:0;
@@ -60,8 +60,8 @@
           rgba(255,47,109,.10),
           rgba(255,79,216,.12)
         );
-      filter: blur(24px);
-      opacity:.62;
+      filter: blur(26px);
+      opacity:.60;
       animation: shimmer 14s ease-in-out infinite alternate;
     }
     @keyframes shimmer{
@@ -69,7 +69,7 @@
       100%{ transform: translate(2%, 2%) rotate(14deg) scale(1.06); }
     }
 
-    /* Floating hearts: ALWAYS behind screens */
+    /* Hearts behind everything */
     #hearts{
       position:fixed; inset:0;
       z-index:1;
@@ -105,74 +105,163 @@
     .heart::after{ left:0; top:-50%; }
 
     @keyframes floatUp{
-      0%{
-        transform: translate3d(0, 110vh, 0) rotate(45deg) scale(var(--s,1));
-        opacity:0;
-      }
+      0%{ transform: translate3d(0, 110vh, 0) rotate(45deg) scale(var(--s,1)); opacity:0; }
       10%{ opacity: var(--o,.75); }
       90%{ opacity: var(--o,.75); }
       100%{
         transform: translate3d(var(--drift, 40px), -20vh, 0)
                    rotate(calc(45deg + var(--spin, 140deg)))
-                   scale(calc(var(--s,1) * 1.1));
+                   scale(calc(var(--s,1) * 1.12));
         opacity:0;
       }
     }
 
-    /* Screens */
-    .screen{
-      position:relative;
-      z-index:2; /* UI above hearts */
-      height:100%;
-      width:100%;
-      display:flex;
-      justify-content:center;
-      padding: calc(26px + var(--safe-top)) 18px calc(22px + var(--safe-bot));
-      opacity:0;
-      transform: translateY(10px);
-      pointer-events:none;
-      transition: opacity .6s ease, transform .6s ease;
-    }
-    .screen.active{
-      opacity:1;
-      transform: translateY(0);
-      pointer-events:auto;
-    }
-
-    /* Lock is centered; countdown is top-aligned */
-    #lockscreen{ align-items:center; }
-    #countdownscreen{ align-items:flex-start; }
-
-    /* Glass */
+    /* Glass utility */
     .glass{
       background: linear-gradient(180deg, var(--glassTop), var(--glassBot));
       border: 1px solid var(--stroke);
       border-radius: var(--radius);
       box-shadow: var(--shadow), var(--glow);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
 
-    /* Lock screen card */
-    .lock-wrap{ width:min(420px, 92vw); text-align:center; }
-    .passcode-card{ padding: 18px 16px 16px; }
+    /* ============= TIMER: TOP OF EVERYTHING ============= */
+    #topTimer{
+      position: fixed;
+      top: calc(14px + var(--safe-top));
+      left: 50%;
+      transform: translate(-50%, -10px);
+      width: min(980px, 94vw);
+      z-index: 999999;          /* TOP */
+      opacity: 0;               /* hidden until unlock */
+      pointer-events: none;
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    body.unlocked #topTimer{
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
 
-    .title{
-      font-size: 22px;
+    .topHeader{
+      padding: 12px 14px 10px;
+      text-align:center;
+    }
+    .topTitle{
+      font-weight: 900;
+      font-size: clamp(16px, 2.1vw, 22px);
+      letter-spacing: .2px;
+      margin: 0 0 4px;
+      text-shadow: 0 18px 60px rgba(0,0,0,.35);
+    }
+    .accent{
+      color: rgba(255,79,216,.98);
+      text-shadow: 0 20px 70px rgba(255,79,216,.22);
+    }
+    .topSub{
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .topGrid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 12px 14px 14px;
+    }
+
+    .tUnit{
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: linear-gradient(180deg, rgba(0,0,0,.26), rgba(255,255,255,.06));
+      padding: 12px 10px;
+      position: relative;
+      overflow:hidden;
+    }
+    .tUnit::before{
+      content:"";
+      position:absolute; inset:-35%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,79,216,.16), transparent 58%),
+        radial-gradient(circle at 70% 60%, rgba(181,139,255,.14), transparent 58%);
+      filter: blur(12px);
+      opacity:.55;
+      transform: rotate(10deg);
+      pointer-events:none;
+    }
+    .tVal{
+      position:relative;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(26px, 3.4vw, 44px);
+      letter-spacing: .02em;
+      color: rgba(255,255,255,.97);
+      text-shadow: 0 14px 55px rgba(0,0,0,.45);
+    }
+    .tLab{
+      position:relative;
+      margin-top: 4px;
+      color: rgba(255,255,255,.78);
       font-weight: 850;
-      margin:0 0 10px;
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .pulse{ animation: pulse .65s ease; }
+    @keyframes pulse{
+      0%{ transform: scale(1); }
+      40%{ transform: scale(1.03); }
+      100%{ transform: scale(1); }
+    }
+
+    /* ============= LOCK OVERLAY ============= */
+    #lockOverlay{
+      position: fixed;
+      inset: 0;
+      z-index: 1000000;  /* above timer while locked */
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: calc(26px + var(--safe-top)) 18px calc(22px + var(--safe-bot));
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    #lockOverlay.fadeOut{
+      opacity:0;
+      transform: translateY(10px);
+      pointer-events:none;
+    }
+
+    .lockCard{
+      width: min(430px, 92vw);
+      padding: 18px 16px 16px;
+      text-align:center;
+    }
+    .lockTitle{
+      margin: 0 0 10px;
+      font-weight: 900;
+      font-size: 22px;
       letter-spacing:.2px;
     }
-    .subtitle{
-      margin:0 0 18px;
+    .lockSub{
+      margin: 0 0 18px;
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.35;
+      line-height:1.35;
     }
 
-    .dots{ display:flex; justify-content:center; gap:10px; margin: 12px 0 8px; }
+    .dots{
+      display:flex;
+      justify-content:center;
+      gap: 10px;
+      margin: 12px 0 8px;
+    }
     .dot{
-      width:11px; height:11px; border-radius:999px;
+      width: 11px; height: 11px;
+      border-radius: 999px;
       border: 1px solid rgba(255,255,255,.26);
       background: rgba(255,255,255,.05);
       transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
@@ -183,29 +272,27 @@
       box-shadow: 0 0 0 7px rgba(255,79,216,.10);
     }
 
-    .lock-msg{
+    .lockMsg{
       min-height: 20px;
       margin: 8px 0 12px;
       font-size: 13px;
       color: rgba(255,255,255,.78);
     }
-    .lock-msg.err{ color: rgba(255,140,170,.95); }
+    .lockMsg.err{ color: rgba(255,140,170,.95); }
 
     .keypad{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       padding: 12px;
-      margin-top: 2px;
     }
-
     .key{
       height: 66px;
       border-radius: 20px;
       border: 1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.08);
       color: var(--text);
-      font-weight: 850;
+      font-weight: 900;
       font-size: 22px;
       cursor:pointer;
       display:flex;
@@ -221,33 +308,19 @@
     .key span{
       display:block;
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 750;
       letter-spacing: .22em;
       opacity:.65;
       margin-top: 2px;
     }
-    .key::after{
-      content:"";
-      position:absolute; inset:-60%;
-      background:
-        radial-gradient(circle at 25% 35%, rgba(255,79,216,.16), transparent 55%),
-        radial-gradient(circle at 75% 70%, rgba(181,139,255,.14), transparent 58%);
-      transform: rotate(18deg);
-      opacity:.0;
-      transition: opacity .2s ease;
-      pointer-events:none;
-    }
-    .key:hover::after{ opacity:.35; }
     .key:active{
       transform: scale(.985);
       background: rgba(255,255,255,.11);
       border-color: rgba(255,255,255,.24);
     }
-    .key:active::after{ opacity:.65; }
 
-    .keypad-bottom{
+    .bottomRow{
       display:flex;
-      justify-content:space-between;
       gap: 10px;
       padding: 0 12px 12px;
     }
@@ -259,7 +332,7 @@
       background: rgba(0,0,0,.18);
       color: rgba(255,255,255,.85);
       cursor:pointer;
-      font-weight: 760;
+      font-weight: 800;
       transition: transform .12s ease, background .12s ease;
       -webkit-tap-highlight-color: transparent;
     }
@@ -267,127 +340,24 @@
 
     .shake{ animation: shake .42s ease; }
     @keyframes shake{
-      0%,100%{transform:translateX(0)}
-      20%{transform:translateX(-10px)}
-      40%{transform:translateX(10px)}
-      60%{transform:translateX(-8px)}
-      80%{transform:translateX(8px)}
+      0%,100%{ transform: translateX(0); }
+      20%{ transform: translateX(-10px); }
+      40%{ transform: translateX(10px); }
+      60%{ transform: translateX(-8px); }
+      80%{ transform: translateX(8px); }
     }
 
-    /* Countdown screen */
-    .count-wrap{
-      width:min(840px, 94vw);
+    /* Tiny footer text (optional) */
+    .footerHint{
       margin-top: 10px;
-      text-align:center;
-    }
-
-    .hero{
-      margin: 6px auto 14px;
-      max-width: 760px;
-    }
-    .hero h1{
-      margin:0;
-      font-size: clamp(26px, 3.8vw, 42px);
-      line-height: 1.12;
-      letter-spacing: .2px;
-      text-shadow: 0 18px 60px rgba(0,0,0,.35);
-    }
-    .hero p{
-      margin: 10px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.35;
-    }
-
-    .timer-card{
-      padding: 10px;
-    }
-
-    .timer{
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      padding: 14px;
-    }
-
-    .unit{
-      padding: 14px 10px;
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(0,0,0,.22), rgba(255,255,255,.06));
-      border: 1px solid rgba(255,255,255,.16);
-      position:relative;
-      overflow:hidden;
-    }
-    .unit::before{
-      content:"";
-      position:absolute; inset:-35%;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(255,79,216,.16), transparent 58%),
-        radial-gradient(circle at 70% 60%, rgba(181,139,255,.14), transparent 58%);
-      filter: blur(12px);
-      opacity:.55;
-      transform: rotate(10deg);
-      pointer-events:none;
-    }
-
-    .val{
-      position:relative;
-      font-weight: 950;
-      font-variant-numeric: tabular-nums;
-      font-size: clamp(34px, 5.2vw, 62px);
-      letter-spacing: .02em;
-      color: rgba(255,255,255,.96);
-      text-shadow: 0 14px 55px rgba(0,0,0,.45);
-    }
-    .lab{
-      position:relative;
-      margin-top: 6px;
-      color: rgba(255,255,255,.76);
-      font-weight: 800;
+      color: rgba(255,255,255,.55);
       font-size: 12px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
     }
 
-    .pulse{ animation: pulse .7s ease; }
-    @keyframes pulse{
-      0%{transform: scale(1)}
-      40%{transform: scale(1.03)}
-      100%{transform: scale(1)}
-    }
-
-    .meta{
-      margin-top: 12px;
-      color: rgba(255,255,255,.70);
-      font-size: 13px;
-    }
-
-    .badge{
-      display:inline-flex;
-      gap:10px;
-      align-items:center;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      box-shadow: 0 18px 50px rgba(0,0,0,.26);
-      margin-top: 16px;
-    }
-    .spark{
-      width:10px;height:10px;border-radius:999px;
-      background: linear-gradient(90deg, rgba(255,79,216,.95), rgba(181,139,255,.95));
-      box-shadow: 0 0 0 9px rgba(255,79,216,.10);
-      animation: blink 1.2s ease-in-out infinite;
-    }
-    @keyframes blink{
-      0%,100%{opacity:.65; transform: scale(.92)}
-      50%{opacity:1; transform: scale(1.05)}
-    }
-
+    /* Mobile layout */
     @media (max-width: 520px){
-      .timer{ grid-template-columns: repeat(2, 1fr); }
+      .topGrid{ grid-template-columns: repeat(2, 1fr); }
       .key{ height: 64px; }
-      .count-wrap{ margin-top: 4px; }
     }
   </style>
 </head>
@@ -396,76 +366,73 @@
   <div class="shimmer"></div>
   <div id="hearts" aria-hidden="true"></div>
 
-  <!-- LOCK SCREEN -->
-  <section id="lockscreen" class="screen active" role="dialog" aria-label="Passcode Lock">
-    <div class="lock-wrap">
-      <div class="glass passcode-card">
-        <h2 class="title">Unlock ❤️</h2>
-        <p class="subtitle">Enter the 6-digit passcode to see the countdown.</p>
-
-        <div id="dots" class="dots" aria-label="Passcode dots">
-          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-        </div>
-
-        <div id="lockMsg" class="lock-msg" aria-live="polite"></div>
-
-        <div class="keypad" aria-label="Numeric keypad">
-          <button class="key" data-digit="1">1<span>⠀</span></button>
-          <button class="key" data-digit="2">2<span>ABC</span></button>
-          <button class="key" data-digit="3">3<span>DEF</span></button>
-          <button class="key" data-digit="4">4<span>GHI</span></button>
-          <button class="key" data-digit="5">5<span>JKL</span></button>
-          <button class="key" data-digit="6">6<span>MNO</span></button>
-          <button class="key" data-digit="7">7<span>PQRS</span></button>
-          <button class="key" data-digit="8">8<span>TUV</span></button>
-          <button class="key" data-digit="9">9<span>WXYZ</span></button>
-
-          <button class="key" style="opacity:.45; pointer-events:none;">&nbsp;<span>&nbsp;</span></button>
-          <button class="key" data-digit="0">0<span>⠀</span></button>
-          <button class="key" id="backBtn" aria-label="Backspace">⌫<span>DEL</span></button>
-        </div>
-
-        <div class="keypad-bottom">
-          <button class="mini" id="clearBtn">Clear</button>
-          <button class="mini" id="hintBtn">Hint</button>
-        </div>
-      </div>
+  <!-- TOP TIMER (fixed, highest z-index, hidden until unlock) -->
+  <header id="topTimer" class="glass" aria-label="Countdown timer">
+    <div class="topHeader">
+      <div class="topTitle">Time left until you meet <span class="accent">Bitti</span> ✨</div>
+      <p class="topSub">Feb 11, 2026 · 10:02 AM (Pacific)</p>
     </div>
-  </section>
 
-  <!-- COUNTDOWN SCREEN -->
-  <section id="countdownscreen" class="screen" aria-label="Countdown Screen">
-    <div class="count-wrap">
-      <div class="hero">
-        <h1>
-          Time left until you meet
-          <span style="color:rgba(255,79,216,.98); text-shadow:0 20px 65px rgba(255,79,216,.20)">Bitti</span> ✨
-        </h1>
-        <p>Counting down to <strong>Feb 11, 2026 · 10:02 AM (Pacific)</strong>.</p>
-      </div>
-
-      <div class="glass timer-card">
-        <div class="timer" role="timer" aria-live="polite">
-          <div class="unit"><div id="d" class="val">00</div><div class="lab">Days</div></div>
-          <div class="unit"><div id="h" class="val">00</div><div class="lab">Hours</div></div>
-          <div class="unit"><div id="m" class="val">00</div><div class="lab">Minutes</div></div>
-          <div class="unit"><div id="s" class="val">00</div><div class="lab">Seconds</div></div>
-        </div>
-      </div>
-
-      <div class="meta" id="metaLine"></div>
-      <div class="badge"><span class="spark"></span> saved for you <span style="opacity:.92">❤️</span></div>
+    <div class="topGrid" role="timer" aria-live="polite">
+      <div class="tUnit"><div id="d" class="tVal">00</div><div class="tLab">Days</div></div>
+      <div class="tUnit"><div id="h" class="tVal">00</div><div class="tLab">Hours</div></div>
+      <div class="tUnit"><div id="m" class="tVal">00</div><div class="tLab">Minutes</div></div>
+      <div class="tUnit"><div id="s" class="tVal">00</div><div class="tLab">Seconds</div></div>
     </div>
-  </section>
+
+    <div style="text-align:center; padding: 0 14px 14px; color: rgba(255,255,255,.70); font-size: 13px;" id="metaLine"></div>
+  </header>
+
+  <!-- LOCK OVERLAY -->
+  <div id="lockOverlay" aria-label="Passcode Lock">
+    <div class="glass lockCard">
+      <h2 class="lockTitle">Unlock ❤️</h2>
+      <p class="lockSub">Enter the 6-digit passcode to see the countdown.</p>
+
+      <div id="dots" class="dots" aria-label="Passcode dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+
+      <div id="lockMsg" class="lockMsg" aria-live="polite"></div>
+
+      <div class="keypad" aria-label="Numeric keypad">
+        <button class="key" data-digit="1">1<span>⠀</span></button>
+        <button class="key" data-digit="2">2<span>ABC</span></button>
+        <button class="key" data-digit="3">3<span>DEF</span></button>
+        <button class="key" data-digit="4">4<span>GHI</span></button>
+        <button class="key" data-digit="5">5<span>JKL</span></button>
+        <button class="key" data-digit="6">6<span>MNO</span></button>
+        <button class="key" data-digit="7">7<span>PQRS</span></button>
+        <button class="key" data-digit="8">8<span>TUV</span></button>
+        <button class="key" data-digit="9">9<span>WXYZ</span></button>
+
+        <button class="key" style="opacity:.45; pointer-events:none;">&nbsp;<span>&nbsp;</span></button>
+        <button class="key" data-digit="0">0<span>⠀</span></button>
+        <button class="key" id="backBtn">⌫<span>DEL</span></button>
+      </div>
+
+      <div class="bottomRow">
+        <button class="mini" id="clearBtn">Clear</button>
+        <button class="mini" id="hintBtn">Hint</button>
+      </div>
+
+      <div class="footerHint">Tip: works best on phone too 😉</div>
+    </div>
+  </div>
 
   <script>
+    /* =========================
+       CONFIG
+    ========================== */
     const PASSCODE = "130725";
 
-    // Feb 11, 2026 10:02 AM Pacific (PST = UTC-8) -> 18:02 UTC
-    const TARGET_EPOCH_MS = Date.UTC(2026, 1, 11, 18, 2, 0);
+    // Feb 11, 2026 10:02 AM Pacific (PST = -08:00). Explicit offset.
+    const TARGET_MS = new Date("2026-02-11T10:02:00-08:00").getTime();
 
-    /* Hearts */
+    /* =========================
+       HEARTS
+    ========================== */
     const hearts = document.getElementById("hearts");
     const rand = (min, max) => Math.random() * (max - min) + min;
 
@@ -477,7 +444,7 @@
         "rgba(181,139,255,.86)",
         "rgba(255,255,255,.60)"
       ];
-      for(let i=0;i<count;i++){
+      for (let i=0; i<count; i++){
         const el = document.createElement("div");
         el.className = "heart";
 
@@ -506,19 +473,20 @@
     }
     makeHearts(28);
 
-    /* Passcode */
-    const lockscreen = document.getElementById("lockscreen");
-    const countdownscreen = document.getElementById("countdownscreen");
+    /* =========================
+       LOCK LOGIC
+    ========================== */
+    const lockOverlay = document.getElementById("lockOverlay");
     const dotsWrap = document.getElementById("dots");
     const dots = Array.from(dotsWrap.querySelectorAll(".dot"));
     const lockMsg = document.getElementById("lockMsg");
 
     let entered = "";
     let locked = true;
+    let hintClicks = 0;
 
-    function vibrate(ms){
-      try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
-    }
+    function vibrate(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+
     function setMessage(text, isErr=false){
       lockMsg.textContent = text || "";
       lockMsg.classList.toggle("err", !!isErr);
@@ -538,17 +506,21 @@
       setMessage("Wrong passcode. Try again.", true);
       setTimeout(resetEntry, 520);
     }
+
     function unlock(){
       locked = false;
-      setMessage("");
       document.body.classList.add("unlocked");
 
-      lockscreen.classList.remove("active");
-      countdownscreen.classList.add("active");
-
       makeHearts(52);
+
+      lockOverlay.classList.add("fadeOut");
+      setTimeout(() => {
+        lockOverlay.remove();
+      }, 480);
+
       startCountdown();
     }
+
     function onDigit(d){
       if(!locked) return;
       if(entered.length >= 6) return;
@@ -560,7 +532,7 @@
         if(entered === PASSCODE){
           setMessage("Unlocked ❤️");
           vibrate([25,40,25]);
-          setTimeout(unlock, 320);
+          setTimeout(unlock, 260);
         } else {
           wrongPass();
         }
@@ -570,6 +542,7 @@
     document.querySelectorAll(".key[data-digit]").forEach(btn=>{
       btn.addEventListener("click", ()=> onDigit(btn.dataset.digit));
     });
+
     document.getElementById("backBtn").addEventListener("click", ()=>{
       if(!locked) return;
       if(entered.length){
@@ -578,6 +551,7 @@
         vibrate(25);
       }
     });
+
     document.getElementById("clearBtn").addEventListener("click", ()=>{
       if(!locked) return;
       resetEntry();
@@ -585,7 +559,6 @@
       vibrate(35);
     });
 
-    let hintClicks = 0;
     document.getElementById("hintBtn").addEventListener("click", ()=>{
       if(!locked) return;
       hintClicks++;
@@ -602,26 +575,33 @@
       if(e.key === "Escape") document.getElementById("clearBtn").click();
     });
 
-    /* Countdown (working) */
+    /* =========================
+       COUNTDOWN
+    ========================== */
     const elD = document.getElementById("d");
     const elH = document.getElementById("h");
     const elM = document.getElementById("m");
     const elS = document.getElementById("s");
     const metaLine = document.getElementById("metaLine");
-    let timerHandle = null;
 
+    let timerHandle = null;
     function pad2(n){ return String(n).padStart(2,"0"); }
+
+    function pulse(el){
+      el.classList.remove("pulse");
+      void el.offsetWidth;
+      el.classList.add("pulse");
+    }
+
     function setVal(el, v){
-      if (!el) return;
       if (el.textContent !== v){
         el.textContent = v;
-        el.classList.remove("pulse");
-        void el.offsetWidth;
-        el.classList.add("pulse");
+        pulse(el);
       }
     }
+
     function renderCountdown(){
-      const diff = Math.max(0, TARGET_EPOCH_MS - Date.now());
+      const diff = Math.max(0, TARGET_MS - Date.now());
       const totalSec = Math.ceil(diff / 1000);
 
       const days  = Math.floor(totalSec / 86400);
@@ -636,9 +616,11 @@
 
       metaLine.textContent = diff === 0 ? "She’s here ❤️" : "Every second gets you closer ✨";
     }
+
     function startCountdown(){
       if (timerHandle) return;
       renderCountdown();
+
       const msToNextSecond = 1000 - (Date.now() % 1000);
       setTimeout(() => {
         renderCountdown();
