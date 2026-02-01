@@ -1,0 +1,140 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #e0f7fa; /* Light, airy background */
+    font-family: 'Arial', sans-serif;
+    overflow: hidden; /* so we don't see scrollbars when pigeon flies in */
+  }
+  
+  .scene {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+  
+  /* Pigeon Container */
+  .pigeon-container {
+    position: absolute;
+    top: 30%;
+    left: -200px; /* start far left off screen */
+    width: 100px;
+    height: auto;
+    z-index: 2;
+    animation: pigeonFlight 4s ease-in-out forwards;
+  }
+  
+  .pigeon {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  /* Pigeon flying in keyframes */
+  @keyframes pigeonFlight {
+    0% {
+      transform: translateX(0) scale(0.8) rotate(-10deg);
+      opacity: 0.5;
+    }
+    50% {
+      transform: translateX(600px) scale(1) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(50vw) scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
+  
+  /* Letter container */
+  .letter-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    text-align: center;
+    opacity: 0;
+    /* We will reveal the envelope after the pigeon lands */
+    animation: showEnvelope 2s ease-in-out forwards 4s;
+  }
+  
+  /* Envelope image */
+  .envelope {
+    position: relative;
+    width: 200px;
+    margin: 0 auto;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  
+  .envelope-image {
+    width: 100%;
+    display: block;
+  }
+  
+  /* Letter content hidden initially, will "open" the letter */
+  .letter-content {
+    background: #fff;
+    margin-top: -5px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    transform: scaleY(0);
+    transform-origin: top;
+    animation: openLetter 1s ease-in-out forwards 6s; 
+  }
+  
+  .letter-content h2 {
+    margin: 0 0 20px;
+    font-size: 1.2rem;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .yes-btn,
+  .no-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .yes-btn {
+    background: #4caf50;
+    color: #fff;
+  }
+  
+  .no-btn {
+    background: #f44336;
+    color: #fff;
+  }
+  
+  /* Response message styling */
+  .response-message {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #333;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    min-height: 40px; /* to keep space even if empty */
+  }
+  
+  .response-message.visible {
+    opacity: 1;
+  }
+  
+  /* Animations */
+  @keyframes showEnvelope {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+  
+  @keyframes openLetter {
+    0% { transform: scaleY(0); }
+    100% { transform: scaleY(1); }
+  }
+  

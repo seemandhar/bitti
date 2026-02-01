@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+<title>Ask for a Date</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  
+  <div class="scene">
+    <div class="pigeon-container">
+      <img src="giphy.gif" alt="Pigeon" class="pigeon">
+    </div>
+    <div class="letter-container">
+      <div class="envelope">
+        <img src="env.gif" alt="Envelope" class="envelope-image">
+      </div>
+      <div class="letter-content">
+        <h2>  Hey <span id="name-display"></span>Bibbo!  Will you be my Valentine?</h2>
+        <div class="buttons">
+          <button class="yes-btn">Yes</button>
+          <button class="no-btn">No</button>
+        </div>
+      </div>
+      <div class="response-message"></div>
+    </div>
+  </div>
+
+
+<script>
+  const yesBtn = document.querySelector('.yes-btn');
+  const noBtn = document.querySelector('.no-btn');
+  const responseMessage = document.querySelector('.response-message');
+
+  yesBtn.addEventListener('click', () => {
+    responseMessage.textContent = "Ping back";
+    responseMessage.classList.add('visible');
+  });
+
+  noBtn.addEventListener('click', () => {
+    responseMessage.textContent = "Choose again";
+    responseMessage.classList.add('visible');
+  });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('name'); // "Alex"
+        document.getElementById('name-display').textContent = name || 'there';
+
+</script>
+
+</body>
+</html>
